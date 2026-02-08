@@ -162,6 +162,32 @@ body::-webkit-scrollbar {
   opacity: 0.5;
 }
 
+.feed-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.river-scroll-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.6rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.6rem;
+  font-style: italic;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.river-scroll-btn:hover {
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .flow-toggle {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);

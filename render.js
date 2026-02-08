@@ -121,14 +121,31 @@ export function render(feedResults) {
     label.className = "feed-label";
     label.textContent = feedName;
 
+    const controlsWrap = document.createElement("div");
+    controlsWrap.className = "feed-controls";
+
+    const scrollToStart = document.createElement("button");
+    scrollToStart.className = "river-scroll-btn";
+    scrollToStart.innerHTML = "&larr; Start";
+    scrollToStart.setAttribute("aria-label", "Scroll to beginning");
+
+    const scrollToEnd = document.createElement("button");
+    scrollToEnd.className = "river-scroll-btn";
+    scrollToEnd.innerHTML = "End &rarr;";
+    scrollToEnd.setAttribute("aria-label", "Scroll to end");
+
     const flowToggle = document.createElement("button");
     flowToggle.className = "flow-toggle";
     flowToggle.innerHTML = "Flow Mode";
     flowToggle.setAttribute("aria-label", "Toggle flow mode");
     flowToggle.setAttribute("data-active", "false");
 
+    controlsWrap.appendChild(scrollToStart);
+    controlsWrap.appendChild(scrollToEnd);
+    controlsWrap.appendChild(flowToggle);
+
     labelWrap.appendChild(label);
-    labelWrap.appendChild(flowToggle);
+    labelWrap.appendChild(controlsWrap);
     section.appendChild(labelWrap);
 
     const wrap = document.createElement("div");
@@ -181,6 +198,16 @@ export function render(feedResults) {
 
     navRight.addEventListener("click", () => {
       container.scrollBy({ left: 400, behavior: "smooth" });
+    });
+
+    // Scroll to start/end handlers
+    scrollToStart.addEventListener("click", () => {
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    });
+
+    scrollToEnd.addEventListener("click", () => {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      container.scrollTo({ left: maxScroll, behavior: "smooth" });
     });
 
     // Flow mode toggle handler
