@@ -194,10 +194,64 @@ function render(cards) {
 
   // Shuffle so each visit feels different
   const shuffled = [...cards].sort(() => Math.random() - 0.5);
+  const total = shuffled.length;
+  const FADE_COUNT = 4; // last N cards gradually fade out
 
   shuffled.forEach((data, i) => {
-    river.appendChild(createCard(data, i));
+    const card = createCard(data, i);
+
+    // Fade the last few cards so the river thins out
+    const remaining = total - 1 - i;
+    if (remaining < FADE_COUNT) {
+      card.style.setProperty(
+        "--card-opacity",
+        ((remaining + 1) / (FADE_COUNT + 1)).toFixed(2),
+      );
+    }
+
+    river.appendChild(card);
   });
+
+  // A quiet ending
+  const ending = document.createElement("div");
+  ending.className = "river-ending";
+  const quote = pickQuote();
+  ending.innerHTML = `
+    <p class="river-ending-text">${quote.text}</p>
+    <p class="river-ending-attr">${quote.attr}</p>
+  `;
+  river.appendChild(ending);
+}
+
+const ENDING_QUOTES = [
+  {
+    text: "You cannot step into the same river twice.",
+    attr: "Heraclitus",
+  },
+  {
+    text: "The river is everywhere at once — at the source and at the mouth, at the waterfall, at the ferry, at the rapids, in the sea, in the mountains — everywhere at once.",
+    attr: "Hermann Hesse, Siddhartha",
+  },
+  {
+    text: "Eventually, all things merge into one, and a river runs through it.",
+    attr: "Norman Maclean",
+  },
+  {
+    text: "No man ever steps in the same river twice, for it is not the same river and he is not the same man.",
+    attr: "Heraclitus",
+  },
+  {
+    text: "The water you touch in a river is the last of what has passed and the first of what is to come.",
+    attr: "Leonardo da Vinci",
+  },
+  {
+    text: "Rivers know this: there is no hurry. We shall get there some day.",
+    attr: "A.A. Milne, Winnie-the-Pooh",
+  },
+];
+
+function pickQuote() {
+  return ENDING_QUOTES[Math.floor(Math.random() * ENDING_QUOTES.length)];
 }
 
 // ── Horizontal scroll via mouse wheel ────────────────
@@ -239,19 +293,30 @@ function setupHintDismiss() {
 // The river drifts slowly on its own. Any interaction
 // pauses the drift; it resumes after a quiet moment.
 
+const drift = {
+  active: true,
+  _timer: null,
+
+  pause(ms = 2000) {
+    this.active = false;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => {
+      this.active = true;
+    }, ms);
+  },
+
+  stop() {
+    this.active = false;
+    clearTimeout(this._timer);
+  },
+};
+
 function setupAutoDrift() {
   const container = document.querySelector(".river-container");
   const SPEED = 0.4; // px per frame — very gentle
-  const RESUME_DELAY = 2000; // ms of inactivity before drift resumes
-  let drifting = true;
-  let resumeTimer = null;
 
   function pause() {
-    drifting = false;
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(() => {
-      drifting = true;
-    }, RESUME_DELAY);
+    drift.pause();
   }
 
   // Pause on any interaction
@@ -261,13 +326,26 @@ function setupAutoDrift() {
   window.addEventListener("keydown", pause);
 
   function tick() {
-    if (drifting) {
+    if (drift.active) {
       container.scrollLeft += SPEED;
     }
     requestAnimationFrame(tick);
   }
 
   requestAnimationFrame(tick);
+}
+
+// ── Skip to end ──────────────────────────────────────
+
+function setupSkipToEnd() {
+  document.getElementById("skipToEnd").addEventListener("click", () => {
+    const ending = document.querySelector(".river-ending");
+    if (!ending) return;
+
+    // Stop drift entirely, then smooth-scroll to the quote
+    drift.stop();
+    ending.scrollIntoView({ behavior: "smooth", inline: "center" });
+  });
 }
 
 // ── Init ─────────────────────────────────────────────
@@ -289,6 +367,7 @@ async function init() {
   setupWheelScroll();
   setupHintDismiss();
   setupAutoDrift();
+  setupSkipToEnd();
 
   // Show fallback cards while feeds load
   render(FALLBACK_CARDS);

@@ -59,6 +59,26 @@ html, body {
   margin-top: 0.15rem;
 }
 
+.skip-to-end {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-style: italic;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.skip-to-end:hover {
+  opacity: 1;
+}
+
 /* ── River container ──────────────────────────────── */
 
 .river-container {
@@ -79,8 +99,6 @@ html, body {
   gap: 2.5rem;
   height: 100%;
   padding: 0 max(4rem, 10vw);
-  /* Extra breathing room so last card isn't jammed against edge */
-  padding-right: max(8rem, 20vw);
 }
 
 /* ── Notecard ─────────────────────────────────────── */
@@ -225,11 +243,40 @@ body::after {
     transform: translateY(30px) rotate(var(--rotation, 0deg));
   }
   to {
-    opacity: 1;
+    opacity: var(--card-opacity, 1);
     transform: translateY(0) rotate(var(--rotation, 0deg));
   }
 }
 
 .card {
   animation: drift-in 0.6s ease both;
+}
+
+/* ── End-of-river ─────────────────────────────────── */
+
+.river-ending {
+  flex: 0 0 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 2rem 4rem;
+  text-align: center;
+  opacity: 0.35;
+}
+
+.river-ending-text {
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text);
+  max-width: 28ch;
+}
+
+.river-ending-attr {
+  margin-top: 0.8rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
 }
