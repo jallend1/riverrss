@@ -1,33 +1,5 @@
 // ── Card rendering & data ────────────────────────────
 
-export const FALLBACK_CARDS = [
-  {
-    source: "Daydream",
-    title: "The library at the end of the internet",
-    body: "Imagine a place where every abandoned blog post ends up, quietly shelved and waiting for someone to wander in.",
-  },
-  {
-    source: "Field notes",
-    title: "Why do birds sing at 4am?",
-    body: "It's called the dawn chorus. The air is still, sound carries further, and there's nothing else to do yet.",
-  },
-  {
-    source: "Workshop",
-    title: "Small tools that do one thing well",
-    body: "A pencil. A pocketknife. A single-purpose command-line utility. There's beauty in restraint.",
-  },
-  {
-    source: "Postcard",
-    title: "Fog over the valley this morning",
-    body: "Everything below the ridgeline erased. Just treetops floating in white. Gone by 9am like it never happened.",
-  },
-  {
-    source: "Fragment",
-    title: "The color of 6am",
-    body: "Not blue, not grey. Something that doesn't have a name in English. The Japanese call it tasogare — the hour when you can't tell faces apart.",
-  },
-];
-
 const CARD_VARIANTS = [
   "",
   "card--warm",
@@ -98,6 +70,35 @@ function createCard(data, index) {
   `;
 
   return el;
+}
+
+const LOADING_MESSAGES = [
+  "Listening for the current...",
+  "The river is gathering...",
+  "Drifting upstream to find what's new...",
+];
+
+export function showLoading() {
+  const river = document.getElementById("river");
+  river.innerHTML = "";
+
+  const msg =
+    LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
+
+  const el = document.createElement("div");
+  el.className = "river-loading";
+  el.textContent = msg;
+  river.appendChild(el);
+}
+
+export function showEmpty() {
+  const river = document.getElementById("river");
+  river.innerHTML = "";
+
+  const el = document.createElement("div");
+  el.className = "river-loading";
+  el.textContent = "The river is dry today. Try again later.";
+  river.appendChild(el);
 }
 
 export function render(cards) {

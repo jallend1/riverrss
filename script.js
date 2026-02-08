@@ -1,5 +1,5 @@
 import { fetchAllFeeds } from "./feed.js";
-import { render, FALLBACK_CARDS } from "./render.js";
+import { render, showLoading, showEmpty } from "./render.js";
 import {
   setupWheelScroll,
   setupHintDismiss,
@@ -23,10 +23,14 @@ async function init() {
   setupAutoDrift();
   setupHeaderNav();
 
-  render(FALLBACK_CARDS);
+  showLoading();
 
   const items = await fetchAllFeeds(FEEDS);
-  if (items.length) render(items);
+  if (items.length) {
+    render(items);
+  } else {
+    showEmpty();
+  }
 }
 
 init();
