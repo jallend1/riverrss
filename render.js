@@ -186,6 +186,13 @@ export function render(feedResults) {
       river.appendChild(card);
     });
 
+    // Add trailing spacers at the end
+    for (let i = 0; i < 3; i++) {
+      const spacer = document.createElement("div");
+      spacer.className = "river-spacer";
+      river.appendChild(spacer);
+    }
+
     container.appendChild(river);
     wrap.appendChild(navLeft);
     wrap.appendChild(container);

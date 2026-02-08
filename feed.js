@@ -95,6 +95,15 @@ function cleanText(html) {
     .replace(/\s+/g, " ")
     .trim();
 
+  // Detect and remove Hacker News metadata pattern
+  if (
+    text.includes("Article URL:") ||
+    text.includes("Comments URL:") ||
+    (text.includes("Points:") && text.includes("# Comments:"))
+  ) {
+    return "";
+  }
+
   if (!text) return "";
   return text.length > 180 ? text.slice(0, 177) + "..." : text;
 }

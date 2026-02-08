@@ -302,6 +302,12 @@ body::-webkit-scrollbar {
   padding: 0 3rem;
 }
 
+.river-spacer {
+  flex: 0 0 auto;
+  width: 400px;
+  height: 1px;
+}
+
 /* ── Notecard ─────────────────────────────────────── */
 
 .card {
