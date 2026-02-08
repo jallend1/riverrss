@@ -19,12 +19,12 @@ export const drift = {
 };
 
 export function setupWheelScroll() {
-  const container = document.querySelector(".river-container");
-
-  container.addEventListener(
+  document.addEventListener(
     "wheel",
     (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      const container = e.target.closest(".river-container");
+      if (!container) return;
+      if (e.shiftKey && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
         container.scrollLeft += e.deltaY;
       }
@@ -34,34 +34,37 @@ export function setupWheelScroll() {
 }
 
 export function setupHintDismiss() {
-  const container = document.querySelector(".river-container");
   const hint = document.getElementById("hint");
   let dismissed = false;
 
-  container.addEventListener("scroll", () => {
-    if (!dismissed && container.scrollLeft > 40) {
+  document.addEventListener(
+    "scroll",
+    () => {
+      if (dismissed) return;
       dismissed = true;
       hint.classList.add("hidden");
-    }
-  });
+    },
+    true,
+  );
 }
 
 export function setupAutoDrift() {
-  const container = document.querySelector(".river-container");
   const SPEED = 0.4;
 
   function pause() {
     drift.pause();
   }
 
-  container.addEventListener("wheel", pause);
-  container.addEventListener("pointerdown", pause);
-  container.addEventListener("touchstart", pause);
+  document.addEventListener("wheel", pause);
+  document.addEventListener("pointerdown", pause);
+  document.addEventListener("touchstart", pause);
   window.addEventListener("keydown", pause);
 
   function tick() {
     if (drift.active) {
-      container.scrollLeft += SPEED;
+      document.querySelectorAll(".river-container").forEach((container) => {
+        container.scrollLeft += SPEED;
+      });
     }
     requestAnimationFrame(tick);
   }
@@ -70,17 +73,18 @@ export function setupAutoDrift() {
 }
 
 export function setupHeaderNav() {
-  const container = document.querySelector(".river-container");
-
   document.getElementById("skipToEnd").addEventListener("click", () => {
     const ending = document.querySelector(".river-ending");
     if (!ending) return;
     drift.stop();
-    ending.scrollIntoView({ behavior: "smooth", inline: "center" });
+    ending.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 
   document.getElementById("skipToStart").addEventListener("click", () => {
     drift.pause(4000);
-    container.scrollTo({ left: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.querySelectorAll(".river-container").forEach((container) => {
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    });
   });
 }

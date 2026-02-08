@@ -9,28 +9,26 @@
   <body>
     <header class="header">
       <button class="header-nav header-nav--left" id="skipToStart">
-        &larr; Scroll to beginning
+        &larr; Scroll to top
       </button>
       <div class="header-center">
         <h1 class="header-title">RiverRSS</h1>
         <p class="header-subtitle">dip in, dip out</p>
       </div>
       <button class="header-nav header-nav--right" id="skipToEnd">
-        Scroll to end &rarr;
+        Scroll to bottom &rarr;
       </button>
     </header>
 
-    <div class="river-container">
-      <div class="river" id="river">
-        <!-- Cards injected by JS -->
-      </div>
-    </div>
+    <button class="refresh-btn" id="refresh">refresh the river</button>
+
+    <main class="rivers" id="rivers">
+      <!-- Feed sections injected by JS -->
+    </main>
 
     <div class="riverbed-hint" id="hint">
       <span>scroll to drift downstream</span>
     </div>
-
-    <button class="refresh-btn" id="refresh">refresh the river</button>
 
     <script type="module" src="script.js"></script>
   </body>

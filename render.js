@@ -57,7 +57,7 @@ function createCard(data, index) {
   el.style.transform = `rotate(${rotation.toFixed(1)}deg)`;
   el.style.animationDelay = `${index * 0.07}s`;
 
-  const verticalDrift = (Math.random() - 0.5) * 60;
+  const verticalDrift = (Math.random() - 0.5) * 30;
   el.style.marginTop = `${verticalDrift}px`;
 
   const time = data.time || "";
@@ -79,8 +79,8 @@ const LOADING_MESSAGES = [
 ];
 
 export function showLoading() {
-  const river = document.getElementById("river");
-  river.innerHTML = "";
+  const rivers = document.getElementById("rivers");
+  rivers.innerHTML = "";
 
   const msg =
     LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
@@ -88,39 +88,67 @@ export function showLoading() {
   const el = document.createElement("div");
   el.className = "river-loading";
   el.textContent = msg;
-  river.appendChild(el);
+  rivers.appendChild(el);
 }
 
 export function showEmpty() {
-  const river = document.getElementById("river");
-  river.innerHTML = "";
+  const rivers = document.getElementById("rivers");
+  rivers.innerHTML = "";
 
   const el = document.createElement("div");
   el.className = "river-loading";
   el.textContent = "The river is dry today. Try again later.";
-  river.appendChild(el);
+  rivers.appendChild(el);
 }
 
-export function render(cards) {
-  const river = document.getElementById("river");
-  river.innerHTML = "";
+export function render(feedResults) {
+  const rivers = document.getElementById("rivers");
+  rivers.innerHTML = "";
 
-  const shuffled = [...cards].sort(() => Math.random() - 0.5);
-  const total = shuffled.length;
-  const FADE_COUNT = 4;
+  feedResults.forEach((items) => {
+    const sorted = [...items].sort(
+      (a, b) => (b.timestamp || 0) - (a.timestamp || 0),
+    );
+    const feedName = sorted[0].source;
 
-  shuffled.forEach((data, i) => {
-    const card = createCard(data, i);
+    const section = document.createElement("section");
+    section.className = "feed-section";
 
-    const remaining = total - 1 - i;
-    if (remaining < FADE_COUNT) {
-      card.style.setProperty(
-        "--card-opacity",
-        ((remaining + 1) / (FADE_COUNT + 1)).toFixed(2),
-      );
-    }
+    const label = document.createElement("h2");
+    label.className = "feed-label";
+    label.textContent = feedName;
+    section.appendChild(label);
 
-    river.appendChild(card);
+    const wrap = document.createElement("div");
+    wrap.className = "river-wrap";
+
+    const container = document.createElement("div");
+    container.className = "river-container";
+
+    const river = document.createElement("div");
+    river.className = "river";
+
+    const total = sorted.length;
+    const FADE_COUNT = 4;
+
+    sorted.forEach((data, i) => {
+      const card = createCard(data, i);
+
+      const remaining = total - 1 - i;
+      if (remaining < FADE_COUNT) {
+        card.style.setProperty(
+          "--card-opacity",
+          ((remaining + 1) / (FADE_COUNT + 1)).toFixed(2),
+        );
+      }
+
+      river.appendChild(card);
+    });
+
+    container.appendChild(river);
+    wrap.appendChild(container);
+    section.appendChild(wrap);
+    rivers.appendChild(section);
   });
 
   const ending = document.createElement("div");
@@ -130,5 +158,5 @@ export function render(cards) {
     <p class="river-ending-text">${quote.text}</p>
     <p class="river-ending-attr">${quote.attr}</p>
   `;
-  river.appendChild(ending);
+  rivers.appendChild(ending);
 }

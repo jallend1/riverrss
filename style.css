@@ -24,12 +24,23 @@
   --card-text-muted: #777;
 }
 
-html, body {
+html {
   height: 100%;
-  overflow: hidden;
   font-family: "Georgia", "Times New Roman", serif;
   background: var(--bg);
   color: var(--text);
+}
+
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: var(--bg);
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Header ───────────────────────────────────────── */
@@ -86,37 +97,108 @@ html, body {
   opacity: 1;
 }
 
+/* ── Refresh button ───────────────────────────────── */
+
+.refresh-btn {
+  display: block;
+  margin: 5.5rem auto 0.5rem;
+  background: none;
+  border: 1px solid var(--text-muted);
+  border-radius: 1rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-style: italic;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.refresh-btn:hover {
+  opacity: 0.8;
+}
+
+/* ── Feed sections ───────────────────────────────── */
+
+.feed-section {
+  padding: 1.5rem 0 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.feed-section:last-of-type {
+  border-bottom: none;
+}
+
+.feed-label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  padding: 0 2rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+/* ── River wrap (fade edges) ─────────────────────── */
+
+.river-wrap {
+  position: relative;
+}
+
+.river-wrap::before,
+.river-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4rem;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.river-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.river-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
 /* ── River container ──────────────────────────────── */
 
 .river-container {
-  height: 100%;
+  height: 280px;
   overflow-x: auto;
   overflow-y: hidden;
-  scrollbar-width: none;           /* Firefox */
-  -ms-overflow-style: none;        /* IE/Edge  */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .river-container::-webkit-scrollbar {
-  display: none;                   /* Chrome/Safari */
+  display: none;
 }
 
 .river {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 2rem;
   height: 100%;
-  padding: 0 max(4rem, 10vw);
+  padding: 0 3rem;
 }
 
 /* ── Notecard ─────────────────────────────────────── */
 
 .card {
   flex: 0 0 auto;
-  width: clamp(260px, 22vw, 340px);
+  width: clamp(220px, 18vw, 300px);
   background: var(--card-1);
   color: var(--card-text);
   border-radius: 6px;
-  padding: 1.8rem 1.6rem 1.4rem;
+  padding: 1.4rem 1.3rem 1.2rem;
   box-shadow:
     0 2px 8px var(--card-shadow),
     0 0 0 1px rgba(0, 0, 0, 0.04);
@@ -134,7 +216,6 @@ a.card {
   cursor: pointer;
 }
 
-/* Slight organic rotation — set per-card via inline style */
 .card:hover {
   transform: rotate(0deg) scale(1.03);
   z-index: 2;
@@ -149,56 +230,33 @@ a.card {
 /* ── Card innards ─────────────────────────────────── */
 
 .card-source {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--card-text-muted);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.6rem;
 }
 
 .card-title {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.35;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   color: var(--card-text);
 }
 
 .card-body {
-  font-size: 0.85rem;
-  line-height: 1.55;
+  font-size: 0.8rem;
+  line-height: 1.5;
   color: var(--card-text-muted);
 }
 
 .card-time {
-  margin-top: 1rem;
-  font-size: 0.65rem;
+  margin-top: 0.8rem;
+  font-size: 0.6rem;
   color: var(--card-text-muted);
   opacity: 0.6;
   font-style: italic;
-}
-
-/* ── Fade edges — the river extends beyond sight ──── */
-
-.river-container::before,
-.river-container::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 6rem;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.river-container::before {
-  left: 0;
-  background: linear-gradient(to right, var(--bg), transparent);
-}
-
-.river-container::after {
-  right: 0;
-  background: linear-gradient(to left, var(--bg), transparent);
 }
 
 /* ── Hint ─────────────────────────────────────────── */
@@ -215,35 +273,11 @@ a.card {
   font-style: italic;
   pointer-events: none;
   transition: opacity 0.8s ease;
+  z-index: 10;
 }
 
 .riverbed-hint.hidden {
   opacity: 0;
-}
-
-/* ── Refresh button ───────────────────────────────── */
-
-.refresh-btn {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  background: none;
-  border: 1px solid var(--text-muted);
-  border-radius: 1rem;
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.7rem;
-  font-style: italic;
-  padding: 0.35rem 1rem;
-  cursor: pointer;
-  opacity: 0.4;
-  transition: opacity 0.3s ease;
-}
-
-.refresh-btn:hover {
-  opacity: 0.8;
 }
 
 /* ── Ambient water-line decoration ────────────────── */
@@ -290,8 +324,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100%;
+  height: 60vh;
   font-size: 0.95rem;
   font-style: italic;
   color: var(--text-muted);
@@ -307,13 +340,11 @@ body::after {
 /* ── End-of-river ─────────────────────────────────── */
 
 .river-ending {
-  flex: 0 0 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  padding: 2rem 4rem;
+  padding: 4rem 2rem 6rem;
   text-align: center;
   opacity: 0.35;
 }

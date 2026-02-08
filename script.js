@@ -13,6 +13,9 @@ const FEEDS = [
   "https://www.theverge.com/rss/index.xml",
   "https://www.theguardian.com/world/rss",
   "https://www.wired.com/feed/rss",
+  "https://feeds.bbci.co.uk/news/rss.xml",
+  "https://hnrss.org/frontpage",
+  "https://www.techradar.com/rss",
 ];
 
 // ── Load feeds ───────────────────────────────────────
@@ -36,7 +39,10 @@ setupAutoDrift();
 setupHeaderNav();
 
 document.getElementById("refresh").addEventListener("click", () => {
-  document.querySelector(".river-container").scrollTo({ left: 0 });
+  window.scrollTo({ top: 0 });
+  document.querySelectorAll(".river-container").forEach((c) => {
+    c.scrollTo({ left: 0 });
+  });
   loadFeeds();
 });
 

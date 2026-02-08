@@ -29,7 +29,7 @@ export async function fetchAllFeeds(urls) {
       }),
     ),
   );
-  return results.flat();
+  return results.filter((items) => items.length > 0);
 }
 
 function parseFeed(xml) {
@@ -44,19 +44,22 @@ function parseFeed(xml) {
 
   const nodes = [...doc.querySelectorAll(isAtom ? "entry" : "item")];
 
-  const items = nodes.map((node) => ({
-    source: feedTitle,
-    title: node.querySelector("title")?.textContent || "Untitled",
-    body: extractBody(node, isAtom),
-    link: isAtom
-      ? node.querySelector("link")?.getAttribute("href") || null
-      : node.querySelector("link")?.textContent || null,
-    time: formatTimeAgo(
-      isAtom
-        ? node.querySelector("updated, published")?.textContent
-        : node.querySelector("pubDate")?.textContent,
-    ),
-  }));
+  const items = nodes.map((node) => {
+    const dateStr = isAtom
+      ? node.querySelector("updated, published")?.textContent
+      : node.querySelector("pubDate")?.textContent;
+
+    return {
+      source: feedTitle,
+      title: node.querySelector("title")?.textContent || "Untitled",
+      body: extractBody(node, isAtom),
+      link: isAtom
+        ? node.querySelector("link")?.getAttribute("href") || null
+        : node.querySelector("link")?.textContent || null,
+      timestamp: dateStr ? new Date(dateStr).getTime() : 0,
+      time: formatTimeAgo(dateStr),
+    };
+  });
 
   return items;
 }
