@@ -186,12 +186,22 @@ export function render(feedResults) {
       river.appendChild(card);
     });
 
-    // Add trailing spacers at the end
-    for (let i = 0; i < 3; i++) {
+    // Add spacers before the quote (equivalent to ~2 cards of space)
+    for (let i = 0; i < 2; i++) {
       const spacer = document.createElement("div");
       spacer.className = "river-spacer";
       river.appendChild(spacer);
     }
+
+    // Add quote at the end of this river (no trailing spacers after it)
+    const quote = pickQuote();
+    const quoteEl = document.createElement("div");
+    quoteEl.className = "river-quote";
+    quoteEl.innerHTML = `
+      <p class="river-quote-text">${quote.text}</p>
+      <p class="river-quote-attr">${quote.attr}</p>
+    `;
+    river.appendChild(quoteEl);
 
     container.appendChild(river);
     wrap.appendChild(navLeft);
@@ -235,13 +245,4 @@ export function render(feedResults) {
     section.appendChild(wrap);
     rivers.appendChild(section);
   });
-
-  const ending = document.createElement("div");
-  ending.className = "river-ending";
-  const quote = pickQuote();
-  ending.innerHTML = `
-    <p class="river-ending-text">${quote.text}</p>
-    <p class="river-ending-attr">${quote.attr}</p>
-  `;
-  rivers.appendChild(ending);
 }
