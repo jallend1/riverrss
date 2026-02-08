@@ -88,15 +88,15 @@ export function setupAutoDrift() {
 
 export function setupHeaderNav() {
   document.getElementById("skipToEnd").addEventListener("click", () => {
-    const ending = document.querySelector(".river-ending");
-    if (!ending) return;
-    drift.stop();
-    ending.scrollIntoView({ behavior: "smooth", block: "center" });
+    drift.pause(4000);
+    document.querySelectorAll(".river-container").forEach((container) => {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      container.scrollTo({ left: maxScroll, behavior: "smooth" });
+    });
   });
 
   document.getElementById("skipToStart").addEventListener("click", () => {
     drift.pause(4000);
-    window.scrollTo({ top: 0, behavior: "smooth" });
     document.querySelectorAll(".river-container").forEach((container) => {
       container.scrollTo({ left: 0, behavior: "smooth" });
     });
