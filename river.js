@@ -49,9 +49,13 @@ export function setupHintDismiss() {
 }
 
 export function setupAutoDrift() {
-  const SPEED = 0.4;
+  const SPEED = 0.5; // 0.5 seems to be the minimum speed -- anything lower and it stops moving
 
-  function pause() {
+  function pause(e) {
+    // Don't pause if clicking the flow toggle button
+    if (e && e.target && e.target.classList.contains("flow-toggle")) {
+      return;
+    }
     drift.pause();
   }
 
@@ -60,10 +64,20 @@ export function setupAutoDrift() {
   document.addEventListener("touchstart", pause);
   window.addEventListener("keydown", pause);
 
+  // Listen for resume-drift event
+  window.addEventListener("resume-drift", () => {
+    drift.active = true;
+    clearTimeout(drift._timer);
+  });
+
   function tick() {
     if (drift.active) {
       document.querySelectorAll(".river-container").forEach((container) => {
-        container.scrollLeft += SPEED;
+        const isFlowActive =
+          container.getAttribute("data-flow-active") === "true";
+        if (isFlowActive) {
+          container.scrollLeft += SPEED;
+        }
       });
     }
     requestAnimationFrame(tick);

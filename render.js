@@ -114,16 +114,40 @@ export function render(feedResults) {
     const section = document.createElement("section");
     section.className = "feed-section";
 
+    const labelWrap = document.createElement("div");
+    labelWrap.className = "feed-label-wrap";
+
     const label = document.createElement("h2");
     label.className = "feed-label";
     label.textContent = feedName;
-    section.appendChild(label);
+
+    const flowToggle = document.createElement("button");
+    flowToggle.className = "flow-toggle";
+    flowToggle.innerHTML = "Flow Mode";
+    flowToggle.setAttribute("aria-label", "Toggle flow mode");
+    flowToggle.setAttribute("data-active", "false");
+
+    labelWrap.appendChild(label);
+    labelWrap.appendChild(flowToggle);
+    section.appendChild(labelWrap);
 
     const wrap = document.createElement("div");
     wrap.className = "river-wrap";
 
+    // Navigation arrows
+    const navLeft = document.createElement("button");
+    navLeft.className = "river-nav river-nav--left";
+    navLeft.innerHTML = "&larr;";
+    navLeft.setAttribute("aria-label", "Scroll left");
+
+    const navRight = document.createElement("button");
+    navRight.className = "river-nav river-nav--right";
+    navRight.innerHTML = "&rarr;";
+    navRight.setAttribute("aria-label", "Scroll right");
+
     const container = document.createElement("div");
     container.className = "river-container";
+    container.setAttribute("data-flow-active", "false");
 
     const river = document.createElement("div");
     river.className = "river";
@@ -146,7 +170,34 @@ export function render(feedResults) {
     });
 
     container.appendChild(river);
+    wrap.appendChild(navLeft);
     wrap.appendChild(container);
+    wrap.appendChild(navRight);
+
+    // Add scroll handlers
+    navLeft.addEventListener("click", () => {
+      container.scrollBy({ left: -400, behavior: "smooth" });
+    });
+
+    navRight.addEventListener("click", () => {
+      container.scrollBy({ left: 400, behavior: "smooth" });
+    });
+
+    // Flow mode toggle handler
+    flowToggle.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent triggering global pause
+      const isActive = container.getAttribute("data-flow-active") === "true";
+      const newState = !isActive;
+      container.setAttribute("data-flow-active", newState.toString());
+      flowToggle.setAttribute("data-active", newState.toString());
+      flowToggle.innerHTML = newState ? "Flow Mode ✓" : "Flow Mode";
+
+      // If enabling flow mode, make sure drift is active
+      if (newState) {
+        window.dispatchEvent(new CustomEvent("resume-drift"));
+      }
+    });
+
     section.appendChild(wrap);
     rivers.appendChild(section);
   });

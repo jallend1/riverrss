@@ -130,15 +130,48 @@ body::-webkit-scrollbar {
   border-bottom: none;
 }
 
+.feed-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  margin-bottom: 0.75rem;
+}
+
 .feed-label {
   font-size: 0.72rem;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--text-muted);
-  padding: 0 2rem;
-  margin-bottom: 0.75rem;
   opacity: 0.5;
+}
+
+.flow-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.8rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.65rem;
+  font-style: italic;
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.flow-toggle:hover {
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.flow-toggle[data-active="true"] {
+  opacity: 0.9;
+  background: rgba(100, 200, 150, 0.15);
+  border-color: rgba(100, 200, 150, 0.3);
+  color: rgba(150, 255, 200, 0.9);
 }
 
 /* ── River wrap (fade edges) ─────────────────────── */
@@ -166,6 +199,44 @@ body::-webkit-scrollbar {
 .river-wrap::after {
   right: 0;
   background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* ── River navigation arrows ──────────────────────── */
+
+.river-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  backdrop-filter: blur(4px);
+}
+
+.river-nav:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.river-nav--left {
+  left: 0.5rem;
+}
+
+.river-nav--right {
+  right: 0.5rem;
 }
 
 /* ── River container ──────────────────────────────── */
