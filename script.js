@@ -15,14 +15,9 @@ const FEEDS = [
   "https://www.wired.com/feed/rss",
 ];
 
-// ── Init ─────────────────────────────────────────────
+// ── Load feeds ───────────────────────────────────────
 
-async function init() {
-  setupWheelScroll();
-  setupHintDismiss();
-  setupAutoDrift();
-  setupHeaderNav();
-
+async function loadFeeds() {
   showLoading();
 
   const items = await fetchAllFeeds(FEEDS);
@@ -33,4 +28,16 @@ async function init() {
   }
 }
 
-init();
+// ── Init ─────────────────────────────────────────────
+
+setupWheelScroll();
+setupHintDismiss();
+setupAutoDrift();
+setupHeaderNav();
+
+document.getElementById("refresh").addEventListener("click", () => {
+  document.querySelector(".river-container").scrollTo({ left: 0 });
+  loadFeeds();
+});
+
+loadFeeds();

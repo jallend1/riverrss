@@ -221,6 +221,31 @@ a.card {
   opacity: 0;
 }
 
+/* ── Refresh button ───────────────────────────────── */
+
+.refresh-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: none;
+  border: 1px solid var(--text-muted);
+  border-radius: 1rem;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-style: italic;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.refresh-btn:hover {
+  opacity: 0.8;
+}
+
 /* ── Ambient water-line decoration ────────────────── */
 
 body::after {

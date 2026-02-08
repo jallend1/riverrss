@@ -1,31 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>River Reader</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="header">
-    <button class="header-nav header-nav--left" id="skipToStart">&larr; Scroll to beginning</button>
-    <div class="header-center">
-      <h1 class="header-title">River</h1>
-      <p class="header-subtitle">dip in, dip out</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>riverrss</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <button class="header-nav header-nav--left" id="skipToStart">
+        &larr; Scroll to beginning
+      </button>
+      <div class="header-center">
+        <h1 class="header-title">RiverRSS</h1>
+        <p class="header-subtitle">dip in, dip out</p>
+      </div>
+      <button class="header-nav header-nav--right" id="skipToEnd">
+        Scroll to end &rarr;
+      </button>
+    </header>
+
+    <div class="river-container">
+      <div class="river" id="river">
+        <!-- Cards injected by JS -->
+      </div>
     </div>
-    <button class="header-nav header-nav--right" id="skipToEnd">Scroll to end &rarr;</button>
-  </header>
 
-  <div class="river-container">
-    <div class="river" id="river">
-      <!-- Cards injected by JS -->
+    <div class="riverbed-hint" id="hint">
+      <span>scroll to drift downstream</span>
     </div>
-  </div>
 
-  <div class="riverbed-hint" id="hint">
-    <span>scroll to drift downstream</span>
-  </div>
+    <button class="refresh-btn" id="refresh">refresh the river</button>
 
-  <script type="module" src="script.js"></script>
-</body>
+    <script type="module" src="script.js"></script>
+  </body>
 </html>
