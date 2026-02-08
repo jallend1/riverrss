@@ -335,16 +335,21 @@ function setupAutoDrift() {
   requestAnimationFrame(tick);
 }
 
-// ── Skip to end ──────────────────────────────────────
+// ── Header navigation ────────────────────────────────
 
-function setupSkipToEnd() {
+function setupHeaderNav() {
+  const container = document.querySelector(".river-container");
+
   document.getElementById("skipToEnd").addEventListener("click", () => {
     const ending = document.querySelector(".river-ending");
     if (!ending) return;
-
-    // Stop drift entirely, then smooth-scroll to the quote
     drift.stop();
     ending.scrollIntoView({ behavior: "smooth", inline: "center" });
+  });
+
+  document.getElementById("skipToStart").addEventListener("click", () => {
+    drift.pause(4000);
+    container.scrollTo({ left: 0, behavior: "smooth" });
   });
 }
 
@@ -367,7 +372,7 @@ async function init() {
   setupWheelScroll();
   setupHintDismiss();
   setupAutoDrift();
-  setupSkipToEnd();
+  setupHeaderNav();
 
   // Show fallback cards while feeds load
   render(FALLBACK_CARDS);

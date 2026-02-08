@@ -40,9 +40,16 @@ html, body {
   left: 0;
   right: 0;
   z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   padding: 1.5rem 2rem 1rem;
   background: linear-gradient(to bottom, var(--bg) 60%, transparent);
   pointer-events: none;
+}
+
+.header-center {
+  text-align: center;
 }
 
 .header-title {
@@ -59,10 +66,7 @@ html, body {
   margin-top: 0.15rem;
 }
 
-.skip-to-end {
-  position: absolute;
-  top: 1.5rem;
-  right: 2rem;
+.header-nav {
   background: none;
   border: none;
   color: var(--text-muted);
@@ -73,9 +77,12 @@ html, body {
   pointer-events: auto;
   opacity: 0.6;
   transition: opacity 0.3s ease;
+  white-space: nowrap;
+  padding: 0;
+  margin-top: 0.2rem;
 }
 
-.skip-to-end:hover {
+.header-nav:hover {
   opacity: 1;
 }
 
