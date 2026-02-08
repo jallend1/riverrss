@@ -1,0 +1,235 @@
+/* ── Reset & base ─────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #1a1a2e;
+  --water: #16213e;
+  --foam: #0f3460;
+  --text: #e0e0e0;
+  --text-muted: #8a8a9a;
+  --card-1: #fffef2;
+  --card-2: #fef6e4;
+  --card-3: #f2f0e9;
+  --card-4: #eef1f5;
+  --card-5: #f5f0ff;
+  --card-shadow: rgba(0, 0, 0, 0.25);
+  --card-text: #2a2a2a;
+  --card-text-muted: #777;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: "Georgia", "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ── Header ───────────────────────────────────────── */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 1.5rem 2rem 1rem;
+  background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+  pointer-events: none;
+}
+
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: lowercase;
+}
+
+.header-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+/* ── River container ──────────────────────────────── */
+
+.river-container {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE/Edge  */
+}
+
+.river-container::-webkit-scrollbar {
+  display: none;                   /* Chrome/Safari */
+}
+
+.river {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  height: 100%;
+  padding: 0 max(4rem, 10vw);
+  /* Extra breathing room so last card isn't jammed against edge */
+  padding-right: max(8rem, 20vw);
+}
+
+/* ── Notecard ─────────────────────────────────────── */
+
+.card {
+  flex: 0 0 auto;
+  width: clamp(260px, 22vw, 340px);
+  background: var(--card-1);
+  color: var(--card-text);
+  border-radius: 6px;
+  padding: 1.8rem 1.6rem 1.4rem;
+  box-shadow:
+    0 2px 8px var(--card-shadow),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  transform-origin: center center;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  font-family: "Georgia", "Times New Roman", serif;
+  position: relative;
+  cursor: default;
+  user-select: text;
+  text-decoration: none;
+  display: block;
+}
+
+a.card {
+  cursor: pointer;
+}
+
+/* Slight organic rotation — set per-card via inline style */
+.card:hover {
+  transform: rotate(0deg) scale(1.03);
+  z-index: 2;
+}
+
+/* Color variations */
+.card--warm   { background: var(--card-2); }
+.card--stone  { background: var(--card-3); }
+.card--cool   { background: var(--card-4); }
+.card--violet { background: var(--card-5); }
+
+/* ── Card innards ─────────────────────────────────── */
+
+.card-source {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--card-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.6rem;
+  color: var(--card-text);
+}
+
+.card-body {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--card-text-muted);
+}
+
+.card-time {
+  margin-top: 1rem;
+  font-size: 0.65rem;
+  color: var(--card-text-muted);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ── Fade edges — the river extends beyond sight ──── */
+
+.river-container::before,
+.river-container::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 6rem;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.river-container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.river-container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* ── Hint ─────────────────────────────────────────── */
+
+.riverbed-hint {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-style: italic;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.riverbed-hint.hidden {
+  opacity: 0;
+}
+
+/* ── Ambient water-line decoration ────────────────── */
+
+body::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--foam) 20%,
+    var(--water) 50%,
+    var(--foam) 80%,
+    transparent
+  );
+  opacity: 0.4;
+  z-index: 10;
+}
+
+/* ── Entrance animation ──────────────────────────── */
+
+@keyframes drift-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(var(--rotation, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--rotation, 0deg));
+  }
+}
+
+.card {
+  animation: drift-in 0.6s ease both;
+}
