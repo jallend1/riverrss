@@ -97,11 +97,18 @@ body::-webkit-scrollbar {
   opacity: 1;
 }
 
-/* ── Refresh button ───────────────────────────────── */
+/* ── Control buttons ──────────────────────────────── */
 
-.refresh-btn {
-  display: block;
+.control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   margin: 5.5rem auto 0.5rem;
+}
+
+.refresh-btn,
+.flow-all-btn {
   background: none;
   border: 1px solid var(--text-muted);
   border-radius: 1rem;
@@ -112,11 +119,19 @@ body::-webkit-scrollbar {
   padding: 0.35rem 1rem;
   cursor: pointer;
   opacity: 0.4;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.refresh-btn:hover {
+.refresh-btn:hover,
+.flow-all-btn:hover {
   opacity: 0.8;
+}
+
+.flow-all-btn[data-active="true"] {
+  opacity: 0.8;
+  background: rgba(100, 200, 150, 0.1);
+  border-color: rgba(100, 200, 150, 0.4);
+  color: rgba(150, 255, 200, 0.9);
 }
 
 /* ── Feed sections ───────────────────────────────── */

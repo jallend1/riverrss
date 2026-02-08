@@ -5,6 +5,7 @@ import {
   setupHintDismiss,
   setupAutoDrift,
   setupHeaderNav,
+  setupGlobalFlowToggle,
 } from "./river.js";
 
 // ── Configuration ────────────────────────────────────
@@ -37,6 +38,7 @@ setupWheelScroll();
 setupHintDismiss();
 setupAutoDrift();
 setupHeaderNav();
+setupGlobalFlowToggle();
 
 document.getElementById("refresh").addEventListener("click", () => {
   window.scrollTo({ top: 0 });

@@ -102,3 +102,32 @@ export function setupHeaderNav() {
     });
   });
 }
+
+export function setupGlobalFlowToggle() {
+  const flowAllBtn = document.getElementById("flowAll");
+
+  flowAllBtn.addEventListener("click", () => {
+    const isActive = flowAllBtn.getAttribute("data-active") === "true";
+    const newState = !isActive;
+
+    // Update button state
+    flowAllBtn.setAttribute("data-active", newState.toString());
+    flowAllBtn.textContent = newState ? "Stop the rivers" : "Let the rivers rage.";
+
+    // Toggle all river containers
+    document.querySelectorAll(".river-container").forEach((container) => {
+      container.setAttribute("data-flow-active", newState.toString());
+    });
+
+    // Toggle all flow toggle buttons
+    document.querySelectorAll(".flow-toggle").forEach((toggle) => {
+      toggle.setAttribute("data-active", newState.toString());
+      toggle.innerHTML = newState ? "Flow Mode ✓" : "Flow Mode";
+    });
+
+    // If enabling, ensure drift is active
+    if (newState) {
+      window.dispatchEvent(new CustomEvent("resume-drift"));
+    }
+  });
+}
