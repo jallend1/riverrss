@@ -70,13 +70,19 @@ export function setupAutoDrift() {
     clearTimeout(drift._timer);
   });
 
+  const accum = new WeakMap();
+
   function tick() {
     if (drift.active) {
       document.querySelectorAll(".river-container").forEach((container) => {
         const isFlowActive =
           container.getAttribute("data-flow-active") === "true";
         if (isFlowActive) {
-          container.scrollLeft += SPEED;
+          const prev = accum.get(container) || 0;
+          const total = prev + SPEED;
+          const px = Math.floor(total);
+          accum.set(container, total - px);
+          if (px > 0) container.scrollLeft += px;
         }
       });
     }

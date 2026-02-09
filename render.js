@@ -39,6 +39,27 @@ function pickQuote() {
   return ENDING_QUOTES[Math.floor(Math.random() * ENDING_QUOTES.length)];
 }
 
+function createConnector(index) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "river-connector");
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.setAttribute("preserveAspectRatio", "none");
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  const d =
+    index % 2 === 0
+      ? "M 0 50 C 25 20, 75 80, 100 50"
+      : "M 0 50 C 25 80, 75 20, 100 50";
+  path.setAttribute("d", d);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "4");
+  path.setAttribute("stroke-linecap", "round");
+
+  svg.appendChild(path);
+  return svg;
+}
+
 function createCard(data, index) {
   const tag = data.link ? "a" : "article";
   const el = document.createElement(tag);
@@ -173,6 +194,10 @@ export function render(feedResults) {
     const FADE_COUNT = 4;
 
     sorted.forEach((data, i) => {
+      if (i > 0) {
+        river.appendChild(createConnector(i - 1));
+      }
+
       const card = createCard(data, i);
 
       const remaining = total - 1 - i;
