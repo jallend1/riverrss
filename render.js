@@ -1,5 +1,8 @@
-// ── Card rendering & data ────────────────────────────
+// **************************
+// * Card Rendering & Data  *
+// **************************
 
+// Various card styles from CSS
 const CARD_VARIANTS = [
   "",
   "card--warm",
@@ -8,6 +11,7 @@ const CARD_VARIANTS = [
   "card--violet",
 ];
 
+// River-related quotes to show at the end of each river
 const ENDING_QUOTES = [
   {
     text: "You cannot step into the same river twice.",
@@ -35,10 +39,19 @@ const ENDING_QUOTES = [
   },
 ];
 
+/**
+ * Picks a random quote from the ENDING_QUOTES array.
+ * @returns {object} A random quote object with text and attr properties.
+ */
 function pickQuote() {
   return ENDING_QUOTES[Math.floor(Math.random() * ENDING_QUOTES.length)];
 }
 
+/**
+ * Sets up the drifting animation for the river containers, including pause on user interaction and resume on custom event.
+ * @param {number} index
+ * @returns {SVGElement} SVG element representing a connector between cards, with a wavy path that alternates direction based on the index.
+ */
 function createConnector(index) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("class", "river-connector");
@@ -60,6 +73,12 @@ function createConnector(index) {
   return svg;
 }
 
+/**
+ * Creates a card element for a feed item with appropriate styles and content
+ * @param {object} data - The feed item data containing source, title, body, link, and time.
+ * @param {number} index - Card index for styling
+ * @returns {HTMLElement} - The new card
+ */
 function createCard(data, index) {
   const tag = data.link ? "a" : "article";
   const el = document.createElement(tag);
@@ -93,12 +112,17 @@ function createCard(data, index) {
   return el;
 }
 
+// Loading messages to show while fetching
 const LOADING_MESSAGES = [
   "Listening for the current...",
   "The river is gathering...",
   "Drifting upstream to find what's new...",
 ];
 
+/**
+ * Initializes loading state
+ * @returns {void}
+ */
 export function showLoading() {
   const rivers = document.getElementById("rivers");
   rivers.innerHTML = "";
@@ -112,6 +136,10 @@ export function showLoading() {
   rivers.appendChild(el);
 }
 
+/**
+ * Displays message when no feed items are available
+ * @returns {void}
+ */
 export function showEmpty() {
   const rivers = document.getElementById("rivers");
   rivers.innerHTML = "";
@@ -122,6 +150,68 @@ export function showEmpty() {
   rivers.appendChild(el);
 }
 
+/**
+ * Creates the scroll button element
+ * @param { "start" | "end" } direction - "start" for left/start button, "end" for right/end button
+ * @returns {HTMLButtonElement} The scroll button element
+ */
+function createScrollBtn(direction) {
+  const btn = document.createElement("button");
+  btn.className = "river-scroll-btn";
+  btn.innerHTML = direction === "start" ? "&larr; Start" : "End &rarr;";
+  btn.setAttribute(
+    "aria-label",
+    direction === "start" ? "Scroll to beginning" : "Scroll to end",
+  );
+  return btn;
+}
+
+/**
+ * Creates the flow toggle button element
+ * @returns {HTMLButtonElement} The flow toggle button element
+ */
+function createFlowToggleBtn() {
+  const btn = document.createElement("button");
+  btn.className = "flow-toggle";
+  btn.innerHTML = "Flow Mode";
+  btn.setAttribute("aria-label", "Toggle flow mode");
+  btn.setAttribute("data-active", "false");
+  return btn;
+}
+
+/**
+ * Creates a navigation arrow button element
+ * @param { "left" | "right" } direction - "left" for left arrow, "right" for right arrow
+ * @returns {HTMLButtonElement} The navigation arrow button element
+ */
+function createNavArrow(direction) {
+  const btn = document.createElement("button");
+  btn.className = `river-nav river-nav--${direction}`;
+  btn.innerHTML = direction === "left" ? "&larr;" : "&rarr;";
+  btn.setAttribute("aria-label", `Scroll ${direction}`);
+  return btn;
+}
+
+/**
+ * Creates the ending quote element to be displayed at the end of each river
+ * @returns {HTMLDivElement} The ending quote element
+ */
+function createEndingQuote() {
+  const quote = pickQuote();
+  const el = document.createElement("div");
+  el.className = "river-quote";
+  el.innerHTML = `
+    <p class="river-quote-text">${quote.text}</p>
+    <p class="river-quote-attr">${quote.attr}</p>
+  `;
+  return el;
+}
+
+/**
+ * Renders the feed results into the river containers
+ * @param {Array<Array<object>>} feedResults - An array of feed item arrays, filled with arrays of that feed's items
+ * @returns {void}
+ */
 export function render(feedResults) {
   const rivers = document.getElementById("rivers");
   rivers.innerHTML = "";
@@ -132,9 +222,12 @@ export function render(feedResults) {
     );
     const feedName = sorted[0].source;
 
-    const section = document.createElement("section");
-    section.className = "feed-section";
+    // Controls
+    const scrollToStart = createScrollBtn("start");
+    const scrollToEnd = createScrollBtn("end");
+    const flowToggle = createFlowToggleBtn();
 
+    // Header label + controls
     const labelWrap = document.createElement("div");
     labelWrap.className = "feed-label-wrap";
 
@@ -144,45 +237,15 @@ export function render(feedResults) {
 
     const controlsWrap = document.createElement("div");
     controlsWrap.className = "feed-controls";
+    controlsWrap.append(scrollToStart, scrollToEnd, flowToggle);
 
-    const scrollToStart = document.createElement("button");
-    scrollToStart.className = "river-scroll-btn";
-    scrollToStart.innerHTML = "&larr; Start";
-    scrollToStart.setAttribute("aria-label", "Scroll to beginning");
-
-    const scrollToEnd = document.createElement("button");
-    scrollToEnd.className = "river-scroll-btn";
-    scrollToEnd.innerHTML = "End &rarr;";
-    scrollToEnd.setAttribute("aria-label", "Scroll to end");
-
-    const flowToggle = document.createElement("button");
-    flowToggle.className = "flow-toggle";
-    flowToggle.innerHTML = "Flow Mode";
-    flowToggle.setAttribute("aria-label", "Toggle flow mode");
-    flowToggle.setAttribute("data-active", "false");
-
-    controlsWrap.appendChild(scrollToStart);
-    controlsWrap.appendChild(scrollToEnd);
-    controlsWrap.appendChild(flowToggle);
-
-    labelWrap.appendChild(label);
-    labelWrap.appendChild(controlsWrap);
-    section.appendChild(labelWrap);
-
-    const wrap = document.createElement("div");
-    wrap.className = "river-wrap";
+    labelWrap.append(label, controlsWrap);
 
     // Navigation arrows
-    const navLeft = document.createElement("button");
-    navLeft.className = "river-nav river-nav--left";
-    navLeft.innerHTML = "&larr;";
-    navLeft.setAttribute("aria-label", "Scroll left");
+    const navLeft = createNavArrow("left");
+    const navRight = createNavArrow("right");
 
-    const navRight = document.createElement("button");
-    navRight.className = "river-nav river-nav--right";
-    navRight.innerHTML = "&rarr;";
-    navRight.setAttribute("aria-label", "Scroll right");
-
+    // River contents
     const container = document.createElement("div");
     container.className = "river-container";
     container.setAttribute("data-flow-active", "false");
@@ -211,63 +274,51 @@ export function render(feedResults) {
       river.appendChild(card);
     });
 
-    // Add spacers before the quote (equivalent to ~2 cards of space)
+    // Spacers + ending quote
     for (let i = 0; i < 2; i++) {
       const spacer = document.createElement("div");
       spacer.className = "river-spacer";
       river.appendChild(spacer);
     }
+    river.appendChild(createEndingQuote());
 
-    // Add quote at the end of this river (no trailing spacers after it)
-    const quote = pickQuote();
-    const quoteEl = document.createElement("div");
-    quoteEl.className = "river-quote";
-    quoteEl.innerHTML = `
-      <p class="river-quote-text">${quote.text}</p>
-      <p class="river-quote-attr">${quote.attr}</p>
-    `;
-    river.appendChild(quoteEl);
-
+    // Assemble section
     container.appendChild(river);
-    wrap.appendChild(navLeft);
-    wrap.appendChild(container);
-    wrap.appendChild(navRight);
 
-    // Add scroll handlers
+    const wrap = document.createElement("div");
+    wrap.className = "river-wrap";
+    wrap.append(navLeft, container, navRight);
+
+    const section = document.createElement("section");
+    section.className = "feed-section";
+    section.append(labelWrap, wrap);
+
+    // Event handlers
     navLeft.addEventListener("click", () => {
       container.scrollBy({ left: -400, behavior: "smooth" });
     });
-
     navRight.addEventListener("click", () => {
       container.scrollBy({ left: 400, behavior: "smooth" });
     });
-
-    // Scroll to start/end handlers
     scrollToStart.addEventListener("click", () => {
       container.scrollTo({ left: 0, behavior: "smooth" });
     });
-
     scrollToEnd.addEventListener("click", () => {
       const maxScroll = container.scrollWidth - container.clientWidth;
       container.scrollTo({ left: maxScroll, behavior: "smooth" });
     });
-
-    // Flow mode toggle handler
     flowToggle.addEventListener("click", (e) => {
-      e.stopPropagation(); // Prevent triggering global pause
+      e.stopPropagation();
       const isActive = container.getAttribute("data-flow-active") === "true";
       const newState = !isActive;
       container.setAttribute("data-flow-active", newState.toString());
       flowToggle.setAttribute("data-active", newState.toString());
       flowToggle.innerHTML = newState ? "Flow Mode ✓" : "Flow Mode";
-
-      // If enabling flow mode, make sure drift is active
       if (newState) {
         window.dispatchEvent(new CustomEvent("resume-drift"));
       }
     });
 
-    section.appendChild(wrap);
     rivers.appendChild(section);
   });
 }

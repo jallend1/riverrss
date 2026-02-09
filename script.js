@@ -8,8 +8,7 @@ import {
   setupGlobalFlowToggle,
 } from "./river.js";
 
-// ── Configuration ────────────────────────────────────
-
+// List of RSS feeds
 const FEEDS = [
   "https://www.theverge.com/rss/index.xml",
   "https://www.theguardian.com/world/rss",
@@ -19,8 +18,10 @@ const FEEDS = [
   "https://www.techradar.com/rss",
 ];
 
-// ── Load feeds ───────────────────────────────────────
-
+/**
+ * Loads all feeds, shows loading state, and renders items or empty state
+ * @return {Promise<void>}
+ */
 async function loadFeeds() {
   showLoading();
 
@@ -32,14 +33,14 @@ async function loadFeeds() {
   }
 }
 
-// ── Init ─────────────────────────────────────────────
-
+// Initialize the app
 setupWheelScroll();
 setupHintDismiss();
 setupAutoDrift();
 setupHeaderNav();
 setupGlobalFlowToggle();
 
+// Global drift control object
 document.getElementById("refresh").addEventListener("click", () => {
   window.scrollTo({ top: 0 });
   document.querySelectorAll(".river-container").forEach((c) => {

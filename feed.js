@@ -1,10 +1,18 @@
-// ── RSS fetching & parsing ───────────────────────────
+// **************************
+// * RSS Fetching & Parsing *
+// **************************
 
+// Using public CORS proxies to fetch feeds to work around my CORS struggles
 const CORS_PROXIES = [
   (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
 ];
 
+/**
+ * Fetches and parses an RSS or Atom feed the URL
+ * @param {string} url - URL of the RSS/Atom feed.
+ * @returns {Promise<Array>} Promise that resolves to an array of feed items.
+ */
 export async function fetchFeed(url) {
   let lastErr;
   for (const proxy of CORS_PROXIES) {
@@ -20,6 +28,11 @@ export async function fetchFeed(url) {
   throw new Error(`All proxies failed. Last error: ${lastErr?.message}`);
 }
 
+/**
+ * Fetches and parses multiple RSS/Atom feeds given an array of URLs.
+ * @param {Array<string>} urls - Array of RSS/Atom feed URLs.
+ * @returns {Promise<Array>} Promise that resolves to array of arrays of feed items.
+ */
 export async function fetchAllFeeds(urls) {
   const results = await Promise.all(
     urls.map((url) =>
@@ -32,6 +45,11 @@ export async function fetchAllFeeds(urls) {
   return results.filter((items) => items.length > 0);
 }
 
+/**
+ * Parses RSS or Atom feed XML and extracts items with source, title, body, link, timestamp, and time ago.
+ * @param {string} xml - The RSS or Atom feed XML as a string.
+ * @returns {Array} Array of feed items with { source, title, body, link, timestamp, time }
+ */
 function parseFeed(xml) {
   const doc = new DOMParser().parseFromString(xml, "application/xml");
 
@@ -64,6 +82,12 @@ function parseFeed(xml) {
   return items;
 }
 
+/**
+ * Extracts and cleans the body text from RSS item/Atom Entry node
+ * @param {Element} node
+ * @param {boolean} isAtom
+ * @returns {string} Cleaned body text or empty string if no real content
+ */
 function extractBody(node, isAtom) {
   if (isAtom) {
     const raw =
@@ -84,6 +108,11 @@ function extractBody(node, isAtom) {
   return cleanText(contentEncoded || description);
 }
 
+/**
+ * Cleans HTML content and truncates to 180 chars. Also removes HackerNews metadata patterns.
+ * @param {string} html
+ * @returns {string} Cleaned and truncated text, or empty string if no meaningful content.
+ */
 function cleanText(html) {
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
@@ -108,6 +137,11 @@ function cleanText(html) {
   return text.length > 180 ? text.slice(0, 177) + "..." : text;
 }
 
+/**
+ * Formats a date string into a "time ago" format
+ * @param {string} dateStr - The date string to format.
+ * @returns {string} Formatted time ago string (e.g., "5m ago", "2h ago", "3d ago", or "just now").
+ */
 function formatTimeAgo(dateStr) {
   if (!dateStr) return "";
   const seconds = Math.floor((Date.now() - new Date(dateStr)) / 1000);
